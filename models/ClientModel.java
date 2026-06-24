@@ -3,8 +3,6 @@ package models;
 import java.time.LocalDate;
 
 public class ClientModel {
-    
-    // Private attributes matching the database schema
     private int clientId;
     private String companyName;
     private String contactPerson;
@@ -17,9 +15,6 @@ public class ClientModel {
     private String creditStatus;
     private boolean isActive;
 
-    /**
-     * Full Constructor: Used by ClientDAO when retrieving a record from the database.
-     */
     public ClientModel(int clientId, String companyName, String contactPerson, String nicNumber, 
                        String brnNumber, String tinNumber, String phoneNumber, 
                        String insurancePolicy, LocalDate insuranceExpiry, 
@@ -37,37 +32,22 @@ public class ClientModel {
         this.isActive = isActive;
     }
 
-    /**
-     * Empty Constructor: Used when creating a brand new client from the Swing UI
-     * before it has a database ID.
-     */
     public ClientModel() {
         this.isActive = true;
-        this.creditStatus = "Good"; // Default status for new clients
+        this.creditStatus = "Good"; 
     }
 
-    // --- Core Business Logic Methods ---
-    
-    /**
-     * Verifies if the client's liability insurance is currently active.
-     * @return true if the policy is valid today, false if it has expired.
-     */
+
     public boolean isInsuranceValid() {
         if (this.insuranceExpiry == null) {
             return false;
         }
-        // Checks if the current date is strictly AFTER the expiry date
         return !LocalDate.now().isAfter(this.insuranceExpiry);
     }
     
-    /**
-     * Checks if the client has a corporate registration (BRN) or is an individual (NIC).
-     */
     public boolean isCorporateClient() {
         return this.brnNumber != null && !this.brnNumber.trim().isEmpty();
     }
-
-    // --- Standard Getters ---
     
     public int getClientId() { return clientId; }
     public String getCompanyName() { return companyName; }
@@ -81,15 +61,10 @@ public class ClientModel {
     public String getCreditStatus() { return creditStatus; }
     public boolean isActive() { return isActive; }
 
-    // --- Sanitizing Setters ---
-
     public void setClientId(int clientId) {
         this.clientId = clientId;
     }
 
-    /**
-     * Capitalizes the first letter of the company name to maintain a clean database.
-     */
     public void setCompanyName(String companyName) {
         if (companyName != null && !companyName.trim().isEmpty()) {
             this.companyName = companyName.substring(0, 1).toUpperCase() + companyName.substring(1).trim();
@@ -102,10 +77,6 @@ public class ClientModel {
         this.contactPerson = contactPerson;
     }
 
-    /**
-     * Formats the Sri Lankan National Identity Card (NIC).
-     * Automatically converts trailing 'v' or 'x' to uppercase.
-     */
     public void setNicNumber(String nicNumber) {
         if (nicNumber != null && !nicNumber.trim().isEmpty()) {
             this.nicNumber = nicNumber.trim().toUpperCase();
