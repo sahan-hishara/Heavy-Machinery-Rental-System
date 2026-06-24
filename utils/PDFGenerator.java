@@ -24,12 +24,8 @@ public class PDFGenerator {
     private static final Font NORMAL_FONT = FontFactory.getFont(FontFactory.HELVETICA, 10, new BaseColor(55, 65, 81));
     private static final Font BOLD_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, new BaseColor(17, 24, 39));
     
-    // ADD THIS MISSING LINE RIGHT HERE:
     private static final Font OBLIQUE_FONT = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 10, new BaseColor(107, 114, 128));
 
-    // ========================================================================
-    // 1. GENERATE DISPATCH NOTICE (DPV) - Shows Estimates & Rates before the job
-    // ========================================================================
     public static String generateDispatchPDF(RentalContractModel contract, double advancePaid) {
         String dirPath = System.getProperty("user.dir") + File.separator + "Documents";
         new File(dirPath).mkdirs();
@@ -52,7 +48,6 @@ public class PDFGenerator {
             infoTable.addCell(createCell("Billed To:\n" + clientName, BOLD_FONT, Element.ALIGN_RIGHT));
             doc.add(infoTable);
 
-            // Calculate Estimates
             long estDays = ChronoUnit.DAYS.between(contract.getIssueDate().toLocalDate(), contract.getExpectedReturn().toLocalDate());
             if (estDays < 1) estDays = 1;
             boolean isHeavy = contract.getEquipment() instanceof HeavyMachinery;
@@ -95,9 +90,6 @@ public class PDFGenerator {
         } catch (Exception e) { return null; }
     }
 
-    // ========================================================================
-    // 2. GENERATE FINAL BILL (INV) - Shows Exact Hours, Fuel, and Penalties
-    // ========================================================================
     public static String generateFinalBillPDF(InvoiceModel invoice, double endMeter, double fuelLiters, String damageNotes, LocalDateTime actualReturn) {
         RentalContractModel contract = invoice.getContract();
         String dirPath = System.getProperty("user.dir") + File.separator + "Documents";
