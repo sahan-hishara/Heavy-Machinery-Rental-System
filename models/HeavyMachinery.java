@@ -4,8 +4,8 @@ public class HeavyMachinery extends Equipment {
     
     private double currentEngineHours;
     private boolean requiresOperator;
-    private double operatorWage; // NEW: Machine specific daily wage
-    private double otRate;       // NEW: Machine specific OT hourly rate
+    private double operatorWage;
+    private double otRate;      
 
     public HeavyMachinery(int equipmentId, String assetTag, String brandModel, double baseDailyRate, 
                           String status, double currentEngineHours, boolean requiresOperator, 
