@@ -6,8 +6,8 @@ public class RentalContractModel {
     private int contractId;
     private ClientModel client;
     private Equipment equipment;
-    private OperatorModel operator; // Can be null if Dry Hire
-    private UserModel issuedBy;     // The user who created the contract
+    private OperatorModel operator; 
+    private UserModel issuedBy;    
     private boolean isWetHire;
     private LocalDateTime issueDate;
     private LocalDateTime expectedReturn;
@@ -26,7 +26,6 @@ public class RentalContractModel {
         this.startMeter = startMeter;
     }
 
-    // --- Getters ---
     public int getContractId() { return contractId; }
     public ClientModel getClient() { return client; }
     public Equipment getEquipment() { return equipment; }
@@ -36,8 +35,6 @@ public class RentalContractModel {
     public LocalDateTime getIssueDate() { return issueDate; }
     public LocalDateTime getExpectedReturn() { return expectedReturn; }
     public double getStartMeter() { return startMeter; }
-
-    // --- Setters ---
     public void setContractId(int contractId) { this.contractId = contractId; }
     public void setClient(ClientModel client) { this.client = client; }
     public void setEquipment(Equipment equipment) { this.equipment = equipment; }
