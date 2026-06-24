@@ -32,7 +32,6 @@ public class InvoiceModel {
 
     private void calculateInitialFees() {
         this.baseRentalFee = contract.getEquipment().getBaseDailyRate();
-        // Uses the machine's specific operator wage
         if (contract.isWetHire() && contract.getEquipment() instanceof HeavyMachinery) {
             this.operatorFee = ((HeavyMachinery) contract.getEquipment()).getOperatorWage();
         } else { this.operatorFee = 0.0; }
@@ -41,7 +40,6 @@ public class InvoiceModel {
 
     private void calculateFinalFees() {
         this.baseRentalFee = contract.getEquipment().getBaseDailyRate();
-        // Uses the machine's specific operator wage
         if (contract.isWetHire() && contract.getEquipment() instanceof HeavyMachinery) {
             this.operatorFee = ((HeavyMachinery) contract.getEquipment()).getOperatorWage();
         } else { this.operatorFee = 0.0; }
