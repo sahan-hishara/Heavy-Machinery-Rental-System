@@ -22,9 +22,9 @@ public class DashboardPanel extends JPanel {
 
     public DashboardPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
-        setLayout(new BorderLayout(20, 20)); // Reduced internal spacing
+        setLayout(new BorderLayout(20, 20)); 
         setBackground(new Color(248, 249, 250)); 
-        setBorder(BorderFactory.createEmptyBorder(25, 30, 25, 30)); // Elegant, tighter margins
+        setBorder(BorderFactory.createEmptyBorder(25, 30, 25, 30)); 
         initComponents();
     }
 
