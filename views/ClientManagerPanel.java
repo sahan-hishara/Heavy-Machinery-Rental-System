@@ -154,7 +154,6 @@ public class ClientManagerPanel extends JPanel {
         scrollPane.getViewport().setBackground(Color.WHITE);
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        // --- NEW: MULTI-BUTTON CONTROL PANEL ---
         JPanel bottomControls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
         bottomControls.setBackground(Color.WHITE);
         bottomControls.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
@@ -180,7 +179,6 @@ public class ClientManagerPanel extends JPanel {
         return panel;
     }
 
-    // --- ADD THIS METHOD ANYWHERE INSIDE ClientManagerPanel ---
     private void deleteSelectedClient() {
         int row = clientTable.getSelectedRow();
         if (row == -1) { JOptionPane.showMessageDialog(this, "Select a client to remove."); return; }
