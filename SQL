@@ -1,0 +1,110 @@
+FLEET EQUIPMENT RENTALS - ENTERPRISE ERP DATABASE SCHEMA
+
+-- 1. SYSTEM USERS (Includes Soft-Delete is_active flag)
+CREATE TABLE IF NOT EXISTS System_Users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    full_name VARCHAR(100) NOT NULL,
+    role ENUM('Admin', 'Desk Clerk') NOT NULL DEFAULT 'Desk Clerk',
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+-- Hash generated via standard jBcrypt for 'admin123'
+INSERT IGNORE INTO System_Users (username, password_hash, full_name, role, is_active) 
+VALUES ('admin', '$2a$10$XbO9.a.G9L/p1kK1D/.O.eF2n9Y8T2TzQz.t3/9T8/7T6.8.t9T7u', 'System Administrator', 'Admin', TRUE);
+
+
+-- 2. CLIENTS DIRECTORY
+CREATE TABLE IF NOT EXISTS Clients (
+    client_id INT AUTO_INCREMENT PRIMARY KEY,
+    company_name VARCHAR(150),
+    contact_person VARCHAR(100) NOT NULL,
+    nic_number VARCHAR(15),
+    brn_number VARCHAR(50),
+    tin_number VARCHAR(50),
+    phone_number VARCHAR(20) NOT NULL,
+    insurance_policy VARCHAR(100),
+    insurance_expiry DATE,
+    credit_status VARCHAR(50) DEFAULT 'Good',
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+
+-- 3. OPERATORS & CREW
+CREATE TABLE IF NOT EXISTS Operators (
+    operator_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    specializations VARCHAR(255) DEFAULT 'All',
+    daily_wage DECIMAL(10,2) NOT NULL DEFAULT 4000.00,
+    status ENUM('Available', 'On_Job', 'Retired') DEFAULT 'Available'
+);
+
+
+-- 4. EQUIPMENT (Base Table)
+CREATE TABLE IF NOT EXISTS Equipment (
+    equipment_id INT AUTO_INCREMENT PRIMARY KEY,
+    asset_tag VARCHAR(50) UNIQUE NOT NULL,
+    brand_model VARCHAR(150) NOT NULL,
+    base_daily_rate DECIMAL(10,2) NOT NULL,
+    status ENUM('Available', 'Rented', 'Under Maintenance', 'Retired') DEFAULT 'Available',
+    category ENUM('Heavy Machinery', 'Light Tool') NOT NULL
+);
+
+
+-- 5. HEAVY MACHINERY (Subclass - Includes machine-specific wages & OT)
+CREATE TABLE IF NOT EXISTS Heavy_Machinery (
+    equipment_id INT PRIMARY KEY,
+    current_engine_hours DECIMAL(10,2) DEFAULT 0.00,
+    requires_operator BOOLEAN DEFAULT TRUE,
+    operator_wage DECIMAL(10,2) DEFAULT 3500.00,
+    ot_rate DECIMAL(10,2) DEFAULT 750.00,
+    FOREIGN KEY (equipment_id) REFERENCES Equipment(equipment_id) ON DELETE CASCADE
+);
+
+
+-- 6. LIGHT TOOLS (Subclass - Includes inventory tracking)
+CREATE TABLE IF NOT EXISTS Light_Tools (
+    equipment_id INT PRIMARY KEY,
+    requires_cleaning BOOLEAN DEFAULT FALSE,
+    quantity_available INT DEFAULT 1,
+    FOREIGN KEY (equipment_id) REFERENCES Equipment(equipment_id) ON DELETE CASCADE
+);
+
+
+-- 7. RENTAL CONTRACTS (Core Dispatch Logic)
+CREATE TABLE IF NOT EXISTS Rental_Contracts (
+    contract_id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT NOT NULL,
+    equipment_id INT NOT NULL,
+    operator_id INT DEFAULT NULL,
+    issued_by_user INT NOT NULL,
+    is_wet_hire BOOLEAN DEFAULT FALSE,
+    issue_date DATETIME NOT NULL,
+    expected_return DATETIME NOT NULL,
+    actual_return DATETIME DEFAULT NULL,
+    start_meter DECIMAL(10,2) DEFAULT 0.00,
+    end_meter DECIMAL(10,2) DEFAULT 0.00,
+    status ENUM('Active', 'Completed', 'Cancelled') DEFAULT 'Active',
+    
+    -- ON DELETE RESTRICT ensures you can never delete a client or user if they have billing history
+    FOREIGN KEY (client_id) REFERENCES Clients(client_id) ON DELETE RESTRICT,
+    FOREIGN KEY (equipment_id) REFERENCES Equipment(equipment_id) ON DELETE RESTRICT,
+    FOREIGN KEY (operator_id) REFERENCES Operators(operator_id) ON DELETE SET NULL,
+    FOREIGN KEY (issued_by_user) REFERENCES System_Users(user_id) ON DELETE RESTRICT
+);
+
+
+-- 8. INVOICES & FINANCIALS
+CREATE TABLE IF NOT EXISTS Invoices (
+    invoice_id INT AUTO_INCREMENT PRIMARY KEY,
+    contract_id INT NOT NULL,
+    advance_paid DECIMAL(10,2) DEFAULT 0.00,
+    fuel_surcharge DECIMAL(10,2) DEFAULT 0.00,
+    damage_penalty DECIMAL(10,2) DEFAULT 0.00,
+    overtime_charge DECIMAL(10,2) DEFAULT 0.00,
+    final_total_due DECIMAL(10,2) DEFAULT 0.00,
+    status ENUM('Partial', 'Final', 'Void') DEFAULT 'Partial',
+    
+    FOREIGN KEY (contract_id) REFERENCES Rental_Contracts(contract_id) ON DELETE CASCADE
+);
