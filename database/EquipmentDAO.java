@@ -11,6 +11,7 @@ import java.sql.Statement;
 
 public class EquipmentDAO {
 
+    //Adding new Equipment
     public boolean addEquipment(Equipment newEquipment) {
         String insertBaseQuery = "INSERT INTO Equipment (asset_tag, brand_model, base_daily_rate, status, category) VALUES (?, ?, ?, ?, ?)";
         
@@ -44,7 +45,6 @@ public class EquipmentDAO {
 
             if (newEquipment instanceof HeavyMachinery) {
                 HeavyMachinery heavy = (HeavyMachinery) newEquipment;
-                // SAVES WAGES TO DB
                 String insertHeavyQuery = "INSERT INTO Heavy_Machinery (equipment_id, current_engine_hours, requires_operator, operator_wage, ot_rate) VALUES (?, ?, ?, ?, ?)";
                 subStmt = conn.prepareStatement(insertHeavyQuery);
                 subStmt.setInt(1, newEquipmentId);
