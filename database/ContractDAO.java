@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 
 public class ContractDAO {
 
+    //Create NEW contract
     public boolean createNewContract(RentalContractModel contract, double advancePay) {
         String insertContract = "INSERT INTO Rental_Contracts (client_id, equipment_id, operator_id, issued_by_user, is_wet_hire, issue_date, expected_return, start_meter, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Active')";
         String insertInvoice = "INSERT INTO Invoices (contract_id, advance_paid, status) VALUES (?, ?, 'Partial')";
