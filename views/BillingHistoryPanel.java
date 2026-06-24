@@ -149,7 +149,6 @@ public class BillingHistoryPanel extends JPanel {
                 Equipment equipment = new HeavyMachinery(rs.getInt("equipment_id"), rs.getString("asset_tag"), rs.getString("brand_model"), rs.getDouble("base_daily_rate"), "Rented", rs.getDouble("start_meter"), rs.getBoolean("is_wet_hire"), rs.getDouble("operator_wage"), rs.getDouble("ot_rate"));
                 OperatorModel operator = rs.getBoolean("is_wet_hire") ? new OperatorModel(rs.getInt("operator_id"), rs.getString("op_name"), "All", 0.0, "Available") : null;
                 
-                // --- THE FIX: SAFELY HANDLE SQL NULL DATES ---
                 java.sql.Timestamp issueTs = rs.getTimestamp("issue_date");
                 LocalDateTime issueDate = (issueTs != null) ? issueTs.toLocalDateTime() : LocalDateTime.now();
 
@@ -168,7 +167,6 @@ public class BillingHistoryPanel extends JPanel {
                     double endMeter = rs.getDouble("end_meter");
                     double fuelLiters = rs.getDouble("fuel_surcharge") / 300.0;
                     
-                    // --- THE FIX: SAFELY HANDLE ACTUAL RETURN DATES ---
                     java.sql.Timestamp actualTs = rs.getTimestamp("actual_return");
                     LocalDateTime actualReturn = (actualTs != null) ? actualTs.toLocalDateTime() : LocalDateTime.now();
                     
