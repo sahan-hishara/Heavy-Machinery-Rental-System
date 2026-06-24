@@ -12,10 +12,10 @@ public class DatabaseConnection {
     static {
         try {
             HikariConfig config = new HikariConfig();
-            config.setJdbcUrl("jdbc:mysql://zephyr.proxy.rlwy.net:53829/railway?useSSL=false&allowPublicKeyRetrieval=true");
+            config.setJdbcUrl("");
             config.setUsername("root");
-            config.setPassword("McosHeFoqsnZmjTqLnvpDEKJPajzGsnY");
-            config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+            config.setPassword("");
+            config.setDriverClassName("");
             config.setMaximumPoolSize(10); 
             config.setMinimumIdle(2);      
             config.setIdleTimeout(30000);  
