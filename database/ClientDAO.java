@@ -12,11 +12,6 @@ import java.util.List;
 
 public class ClientDAO {
 
-    /**
-     * Inserts a brand new client into the database.
-     * * @param client The populated ClientModel object from your UI
-     * @return true if insertion was successful, false otherwise
-     */
     public boolean addClient(ClientModel client) {
         String query = "INSERT INTO Clients (company_name, contact_person, nic_number, brn_number, " +
                        "tin_number, phone_number, insurance_policy, insurance_expiry, credit_status, is_active) " +
@@ -32,10 +27,7 @@ public class ClientDAO {
             stmt.setString(5, client.getTinNumber());
             stmt.setString(6, client.getPhoneNumber());
             stmt.setString(7, client.getInsurancePolicy());
-            
-            // Convert modern Java LocalDate to java.sql.Date for the database
             stmt.setDate(8, Date.valueOf(client.getInsuranceExpiry()));
-            
             stmt.setString(9, client.getCreditStatus());
             stmt.setBoolean(10, client.isActive());
 
@@ -47,7 +39,8 @@ public class ClientDAO {
             return false;
         }
     }
-    // --- NEW: Update Insurance Expiry Date ---
+
+    //Update Insuarance Expiry Date
     public boolean updateInsuranceExpiry(int clientId, java.time.LocalDate newExpiry) {
         String query = "UPDATE Clients SET insurance_expiry = ? WHERE client_id = ?";
         try (java.sql.Connection conn = DatabaseConnection.getConnection();
@@ -62,12 +55,9 @@ public class ClientDAO {
             return false;
         }
     }
-    /**
-     * Retrieves all active clients to populate the Dropdown menus and Data Tables in the UI.
-     */
+
     public List<ClientModel> getAllActiveClients() {
         List<ClientModel> clientList = new ArrayList<>();
-        // Only pull active clients to keep the UI clean
         String query = "SELECT * FROM Clients WHERE is_active = TRUE";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -75,7 +65,6 @@ public class ClientDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                // Safely convert SQL Date back to Java LocalDate
                 Date sqlDate = rs.getDate("insurance_expiry");
                 LocalDate expiryDate = (sqlDate != null) ? sqlDate.toLocalDate() : null;
 
@@ -101,10 +90,7 @@ public class ClientDAO {
         return clientList;
     }
 
-    /**
-     * Updates an existing client's details.
-     * Most commonly used when a client renews their expired liability insurance.
-     */
+    //Updates client details
     public boolean updateClientInsurance(int clientId, String newPolicyNumber, LocalDate newExpiryDate) {
         String query = "UPDATE Clients SET insurance_policy = ?, insurance_expiry = ? WHERE client_id = ?";
 
@@ -124,14 +110,7 @@ public class ClientDAO {
         }
     }
 
-    /**
-     * Pre-Insertion Validation: Checks if an NIC or BRN already exists in the database
-     * to prevent Duplicate Entry SQL crashes.
-     */
-    /**
-     * Pre-Insertion Validation: Checks if an NIC or BRN already exists in the database
-     * to prevent Duplicate Entry SQL crashes.
-     */
+    //Prevents Client duplication via NIC and BRN
     public boolean isClientExists(String nicNumber, String brnNumber) {
         boolean hasNic = (nicNumber != null && !nicNumber.trim().isEmpty());
         boolean hasBrn = (brnNumber != null && !brnNumber.trim().isEmpty());
